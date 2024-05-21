@@ -18,7 +18,8 @@ collection.
 Mandatory variables are:
 
 * *robot_controller_user_password*: password for the robot user on the host
-* *robot_controller_deployment_key*: SSH key used to fetch Robot scripts from a remote Git repository
+* *robot_controller_deployment_key*: private SSH key used by the robot user to fetch Robot scripts from a remote Git repository
+* *robot_controller_authorized_keys*: public SSH keys for logging in to the host as the robot user
 
 Some variables are optional:
 

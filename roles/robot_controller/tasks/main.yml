@@ -10,6 +10,9 @@
       - robot_controller_uid is number
       - robot_controller_gid is number
       - robot_controller_deployment_key is string
+      - robot_controller_authorized_keys is not string
+      - robot_controller_authorized_keys is not mapping
+      - robot_controller_authorized_keys is iterable
 
 - name: Robot controller | create group
   ansible.builtin.group:
@@ -45,6 +48,16 @@
     owner: "{{ robot_controller_user }}"
     group: "{{ robot_controller_user_group }}"
     mode: '0600'
+
+- name: Robot controller | add ssh authorized keys
+  ansible.builtin.lineinfile:
+    path: "{{ robot_controller_user_home }}/.ssh/authorized_keys"
+    line: "{{ item }}"
+    create: true
+    owner: "{{ robot_controller_user }}"
+    group: "{{ robot_controller_user_group }}"
+    mode: '0600'
+  loop: "{{ robot_controller_authorized_keys }}"
 
 - name: Robot controller | install podman
   ansible.builtin.dnf:
