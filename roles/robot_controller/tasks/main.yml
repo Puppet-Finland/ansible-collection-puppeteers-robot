@@ -1,0 +1,73 @@
+# code: language=ansible
+---
+- name: Validate parameters
+  ansible.builtin.assert:
+    that:
+      - robot_controller_user is string
+      - robot_controller_user_group is string
+      - robot_controller_user_home is string
+      - robot_controller_user_password is string
+      - robot_controller_uid is number
+      - robot_controller_gid is number
+      - robot_controller_deployment_key is string
+
+- name: Robot controller | create group
+  ansible.builtin.group:
+    name: "{{ robot_controller_user_group }}"
+    state: present
+    gid: "{{ robot_controller_gid }}"
+
+- name: Robot controller | create user
+  ansible.builtin.user:
+    name: "{{ robot_controller_user }}"
+    state: present
+    # Hardcode the UID so that we don't have to play UID mapping games between
+    # host and container user UIDs
+    uid: "{{ robot_controller_uid }}"
+    comment: User for running Robot Framework
+    password: "{{ robot_controller_user_password | password_hash('sha512') }}"
+    create_home: true
+    home: "{{ robot_controller_user_home }}"
+    group: "{{ robot_controller_user_group }}"
+
+- name: Robot controller | create robot ssh directory
+  ansible.builtin.file:
+    path: "{{ robot_controller_user_home }}/.ssh"
+    state: directory
+    owner: "{{ robot_controller_user }}"
+    group: "{{ robot_controller_user_group }}"
+    mode: '0600'
+
+- name: Robot controller | add ssh deployment key
+  ansible.builtin.copy:
+    content: "{{ robot_controller_deployment_key }}"
+    dest: "{{ robot_controller_user_home }}/.ssh/id_rsa"
+    owner: "{{ robot_controller_user }}"
+    group: "{{ robot_controller_user_group }}"
+    mode: '0600'
+
+- name: Robot controller | install podman
+  ansible.builtin.dnf:
+    name: podman
+    state: present
+
+- name: Robot controller | create container build directory
+  ansible.builtin.file:
+    path: "{{ robot_controller_user_home }}/podman-build"
+    state: directory
+    owner: "{{ robot_controller_user }}"
+    group: "{{ robot_controller_user_group }}"
+    mode: '0640'
+
+- name: Robot controller | copy robot containerfile
+  ansible.builtin.template:
+    src: templates/Containerfile.ubi9.j2
+    dest: "{{ robot_controller_user_home }}/podman-build/Containerfile"
+
+- name: Robot controller | build robot image
+  containers.podman.podman_image:
+    name: robot
+    path: "{{ robot_controller_user_home }}/podman-build"
+    build:
+      format: oci
+      cache: "{{ robot_controller_use_podman_cache }}"

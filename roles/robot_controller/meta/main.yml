@@ -1,0 +1,12 @@
+galaxy_info:
+  author: Samuli Seppänen
+  description: Manage Podman-based Robot Framework hosts and containers
+  company: Puppeteers Oy
+  license: BSD-2-Clause
+  min_ansible_version: 2.1
+  platforms:
+  - name: RedHat
+    versions:
+    - 9
+  galaxy_tags: []
+dependencies: []

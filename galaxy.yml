@@ -1,0 +1,21 @@
+namespace: puppeteers
+name: robot
+version: 1.0.0
+readme: README.md
+authors:
+- Samuli Seppänen <samuli.seppanen@puppeteers.net>
+description: Various roles related to Robot Framework
+license:
+- BSD-2-Clause
+tags:
+- robotframework
+- podman
+- redhat
+
+dependencies:
+  containers.podman: '>=1.13.0 <2.0.0'
+
+repository: https://github.com/Puppet-Finland/ansible-collection-puppeteers-robot.git
+documentation: https://github.com/Puppet-Finland/ansible-collection-puppeteers-robot/README.md
+homepage: https://github.com/Puppet-Finland/ansible-collection-puppeteers-robot
+issues: https://github.com/Puppet-Finland/ansible-collection-puppeteers-robot/issues

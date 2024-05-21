@@ -1,0 +1,10 @@
+---
+robot_controller_user: robot
+robot_controller_user_home: /home/robot
+robot_controller_user_group: robot
+robot_controller_uid: 1461
+robot_controller_gid: 1461
+
+# Change to false to rebuild the image from scratch. Mainly intended for
+# security updates.
+robot_controller_use_podman_cache: true

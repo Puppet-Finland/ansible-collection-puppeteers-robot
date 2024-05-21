@@ -1,0 +1,43 @@
+FROM ubi9-minimal as robot-base
+
+ARG DNF=microdnf
+
+RUN $DNF -y install python3 python3-pip
+
+# Robot and its dependencies
+RUN pip3 install \
+  robotframework \
+  robotframework-browser \
+  robotframework-imaplibrary2
+
+# Playwright dependencies (required by the Browser library)
+RUN $DNF -y module enable nodejs:20
+RUN $DNF -y install nodejs
+RUN $DNF -y install unzip
+RUN /usr/local/bin/rfbrowser init
+
+# Playwright does not officially support any Red Hat derivatives, but these
+# packages provide all the Playwright dependencies on RHEL 9 derivatives.
+RUN $DNF -y install \
+  alsa-lib \
+  cairo \
+  pango \
+  libxkbcommon \
+  mesa-libgbm \
+  libXrandr \
+  libXfixes \
+  libXdamage \
+  libXcomposite \
+  at-spi2-core \
+  libdrm \
+  cups-libs \
+  atk \
+  at-spi2-atk \
+  dbus-libs \
+  nspr \
+  nss \
+  nss-util
+
+# Create dedicated user for Robot Framework
+RUN groupadd -g {{ robot_controller_gid }} {{ robot_controller_user_group }}
+RUN useradd -u {{ robot_controller_uid }} -g {{ robot_controller_user_group }} {{ robot_controller_user }}
