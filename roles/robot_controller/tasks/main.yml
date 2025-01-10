@@ -1,18 +1,26 @@
 # code: language=ansible
 ---
-- name: Validate parameters
+- name: validate parameters
   ansible.builtin.assert:
     that:
       - robot_controller_user is string
       - robot_controller_user_group is string
       - robot_controller_user_home is string
-      - robot_controller_user_password is string
       - robot_controller_uid is number
       - robot_controller_gid is number
-      - robot_controller_deployment_key is string
       - robot_controller_authorized_keys is not string
       - robot_controller_authorized_keys is not mapping
       - robot_controller_authorized_keys is iterable
+
+- name: validate potentially encrypt variables (may fail)
+  ansible.builtin.assert:
+    that: robot_controller_user_password is string
+  ignore_errors: true
+
+- name: validate potentially encrypt variables (may fail)
+  ansible.builtin.assert:
+    that: robot_controller_deployment_key is string
+  ignore_errors: true
 
 - name: create group
   ansible.builtin.group:
