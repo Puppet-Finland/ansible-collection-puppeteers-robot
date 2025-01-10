@@ -36,7 +36,7 @@
     # host and container user UIDs
     uid: "{{ robot_controller_uid }}"
     comment: User for running Robot Framework
-    password: "{{ robot_controller_user_password | password_hash('sha512') }}"
+    password: "{{ robot_controller_user_password | ansible.builtin.password_hash('sha512') }}"
     create_home: true
     home: "{{ robot_controller_user_home }}"
     group: "{{ robot_controller_user_group }}"
