@@ -11,6 +11,8 @@
       - robot_controller_authorized_keys is not string
       - robot_controller_authorized_keys is not mapping
       - robot_controller_authorized_keys is iterable
+      - robot_controller_user_password is defined
+      - robot_controller_deployment_key is defined
 
 - name: validate potentially encrypt variables (may fail)
   ansible.builtin.assert:
